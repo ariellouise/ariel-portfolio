@@ -100,8 +100,7 @@ export default function Testimonials() {
             Good work speaks<span className="accent">.</span>
           </h2>
           <p>
-            So do the people behind it. Feedback from clients
-            I've had the opportunity to work with.
+            Worked with me? Share your experience.
           </p>
         </div>
         <span className="section-index">03 / REVIEWS</span>
@@ -111,7 +110,10 @@ export default function Testimonials() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={() => setFormOpen(!formOpen)}
+          onClick={() => {
+            setTurnstileToken(null)
+            setFormOpen(!formOpen)
+          }}
           aria-expanded={formOpen}
           aria-controls="testimonial-form"
         >
@@ -176,7 +178,7 @@ export default function Testimonials() {
               required
               minLength={10}
               maxLength={1200}
-              rows={5}
+              rows={4}
               placeholder="What was your experience like?"
             />
 
@@ -186,7 +188,7 @@ export default function Testimonials() {
                 siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
                 options={{
                   theme: 'dark',
-                  size: 'normal',
+                  size: 'flexible',
                 }}
                 onSuccess={(token) => {
                   setTurnstileToken(token)
@@ -215,9 +217,9 @@ export default function Testimonials() {
             <button
               className="btn btn-primary"
               type="submit"
-              disabled
+              disabled={submitting || !turnstileToken || rating === 0}
             >
-              Submit review <ArrowUpRight size={17} />
+              {submitting ? 'Submitting…' : 'Submit review'} <ArrowUpRight size={17} />
             </button>
 
             {submitMessage && (
@@ -239,8 +241,7 @@ export default function Testimonials() {
             )}
 
             <p className="review-note">
-              Submissions will be enabled after secure server-side
-              verification is configured.
+              Complete the security verification and select a rating to submit.
             </p>
           </form>
         </div>
