@@ -1,9 +1,23 @@
 
-import { useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { ArrowUpRight, Star, X } from 'lucide-react'
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 
+type PublishedReview = { client_name: string; business_name: string | null; rating: number; review: string }
+
 export default function Testimonials() {
+  const [reviews, setReviews] = useState<PublishedReview[]>([])
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch('/api/testimonials', { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) throw new Error('Could not load reviews')
+        const data = await response.json()
+        if (Array.isArray(data.reviews)) setReviews(data.reviews)
+      })
+      .catch(() => {})
+    return () => controller.abort()
+  }, [])
   const [formOpen, setFormOpen] = useState(false)
   const [rating, setRating] = useState(0)
   const [submitting, setSubmitting] = useState(false)
@@ -124,6 +138,21 @@ export default function Testimonials() {
           {formOpen ? <X size={17} /> : <ArrowUpRight size={17} />}
         </button>
       </div>
+
+      {reviews.length > 0 && (
+        <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '1rem' }}>
+          {reviews.map((review, index) => (
+            <article key={index} style={{ border: '1px solid #343a40', borderRadius: '12px', padding: '1.25rem', minWidth: 0, overflowWrap: 'anywhere' }}>
+              <div aria-label={`${review.rating} out of 5 stars`} style={{ display: 'flex', gap: '4px', color: '#b4f66a' }}>
+                {[1, 2, 3, 4, 5].map(star => <Star key={star} size={17} fill={star <= review.rating ? 'currentColor' : 'none'} aria-hidden="true" />)}
+              </div>
+              <p style={{ whiteSpace: 'pre-wrap', margin: '1rem 0' }}>{review.review}</p>
+              <strong>{review.client_name}</strong>
+              {review.business_name && <p style={{ margin: '0.25rem 0 0', opacity: 0.8 }}>{review.business_name}</p>}
+            </article>
+          ))}
+        </div>
+      )}
 
       {submitMessage && (
         <p className="review-success" role="status" style={{ gridColumn: '1 / -1', marginBottom: 0 }}>
