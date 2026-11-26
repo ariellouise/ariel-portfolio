@@ -300,3 +300,23 @@
   line-height: 1.6;
   margin-top: 10px;
 }
+
+
+/* Compact responsive review layout */
+.contact-section { padding-block: clamp(44px, 6vw, 72px); }
+.testimonials-compact { width: calc(100% - 44px); }
+.testimonials-compact .testimonial-banner-heading h2 { letter-spacing: -.035em; }
+.testimonials-compact .testimonial-form-panel { max-width: none; margin-top: 18px; padding: 20px 0 0; border: 0; border-top: 1px solid #343b42; border-radius: 0; background: transparent; min-width: 0; }
+.testimonials-compact .testimonial-form-panel h3 { margin: 8px 0; }
+.testimonials-compact .testimonial-form-panel > p { margin: 0 0 16px; }
+.testimonials-compact .testimonial-form-panel form { gap: 8px; min-width: 0; }
+.testimonials-compact .testimonial-form-panel input:not([type="checkbox"]), .testimonials-compact .testimonial-form-panel textarea { margin-bottom: 4px; padding: 10px 12px; }
+.testimonials-compact .review-rating, .testimonials-compact .review-consent, .testimonials-compact .review-note { margin: 4px 0; }
+.testimonials-compact .review-turnstile { max-width: 100%; overflow-x: auto; }
+.testimonials-compact .testimonial-form-panel form > .btn { align-self: flex-start; }
+@media (min-width: 800px) {
+ .testimonials-compact .testimonial-form-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); column-gap: 36px; align-items: start; grid-template-rows: auto auto 1fr; }
+ .testimonials-compact .testimonial-form-panel > .eyebrow, .testimonials-compact .testimonial-form-panel > h3, .testimonials-compact .testimonial-form-panel > p { grid-column: 1; }
+ .testimonials-compact .testimonial-form-panel > form { grid-column: 2; grid-row: 1 / 4; }
+}
+@media (max-width: 420px) { .testimonials-compact { width: calc(100% - 24px); padding-inline: 14px; } }
