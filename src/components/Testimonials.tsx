@@ -80,6 +80,7 @@ export default function Testimonials() {
       setRating(0)
       setTurnstileToken(null)
       turnstileRef.current?.reset()
+      setFormOpen(false)
     } catch {
       setSubmitError(
         'Your review could not be submitted. Please try again later.'
@@ -112,6 +113,8 @@ export default function Testimonials() {
           className="btn btn-primary"
           onClick={() => {
             setTurnstileToken(null)
+            setSubmitMessage('')
+            setSubmitError('')
             setFormOpen(!formOpen)
           }}
           aria-expanded={formOpen}
@@ -121,6 +124,12 @@ export default function Testimonials() {
           {formOpen ? <X size={17} /> : <ArrowUpRight size={17} />}
         </button>
       </div>
+
+      {submitMessage && (
+        <p className="review-success" role="status" style={{ gridColumn: '1 / -1', marginBottom: 0 }}>
+          {submitMessage}
+        </p>
+      )}
 
       {formOpen && (
         <div className="testimonial-form-panel" id="testimonial-form">
@@ -221,12 +230,6 @@ export default function Testimonials() {
             >
               {submitting ? 'Submitting…' : 'Submit review'} <ArrowUpRight size={17} />
             </button>
-
-            {submitMessage && (
-              <p className="review-success" role="status">
-                {submitMessage}
-              </p>
-            )}
 
             {submitError && (
               <p className="review-error" role="alert">
