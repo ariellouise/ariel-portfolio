@@ -21,8 +21,24 @@ export default async function handler(
   req: ApiRequest,
   res: ApiResponse
 ) {
+  if (req.method === 'GET') {
+    res.setHeader('Cache-Control', 'no-store')
+    const url = process.env.SUPABASE_URL
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!url || !key) return res.status(500).json({ error: 'Server configuration error' })
+    try {
+      const supabase = createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } })
+      const { data, error } = await supabase.from('testimonials')
+        .select('client_name,business_name,rating,review')
+        .eq('approved', true).eq('consent_to_publish', true).limit(50)
+      if (error) throw error
+      return res.status(200).json({ reviews: data ?? [] })
+    } catch {
+      return res.status(500).json({ error: 'Could not load reviews' })
+    }
+  }
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST')
+    res.setHeader('Allow', 'GET, POST')
     return res.status(405).json({
       error: 'Method not allowed',
     })
